@@ -1,0 +1,54 @@
+-- Schema for Course Review Hub
+
+CREATE TABLE IF NOT EXISTS users (
+	id INT AUTO_INCREMENT PRIMARY KEY,
+	name VARCHAR(100) NOT NULL,
+	email VARCHAR(190) NOT NULL UNIQUE,
+	password_hash VARCHAR(255) NOT NULL,
+	role ENUM('user','admin') NOT NULL DEFAULT 'user',
+	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS courses (
+	id INT AUTO_INCREMENT PRIMARY KEY,
+	code VARCHAR(32) NOT NULL UNIQUE,
+	title VARCHAR(200) NOT NULL,
+	description TEXT,
+	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS reviews (
+	id INT AUTO_INCREMENT PRIMARY KEY,
+	course_id INT NOT NULL,
+	user_id INT NOT NULL,
+	rating TINYINT NOT NULL CHECK (rating BETWEEN 1 AND 5),
+	comment TEXT,
+	semester_taken VARCHAR(50) NULL,
+	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	updated_at TIMESTAMP NULL DEFAULT NULL,
+	FOREIGN KEY (course_id) REFERENCES courses(id) ON DELETE CASCADE,
+	FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS tags (
+	id INT AUTO_INCREMENT PRIMARY KEY,
+	name VARCHAR(64) NOT NULL UNIQUE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS review_tags (
+	review_id INT NOT NULL,
+	tag_id INT NOT NULL,
+	PRIMARY KEY (review_id, tag_id),
+	FOREIGN KEY (review_id) REFERENCES reviews(id) ON DELETE CASCADE,
+	FOREIGN KEY (tag_id) REFERENCES tags(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Seed common tags
+INSERT IGNORE INTO tags (name) VALUES
+	('Heavy Reading'),
+	('Pop Quizzes'),
+	('Group Projects'),
+	('Attendance Matters'),
+	('Light Workload'),
+	('Project Based'),
+	('Exam Heavy');
