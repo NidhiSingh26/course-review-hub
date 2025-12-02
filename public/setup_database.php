@@ -7,12 +7,6 @@ declare(strict_types=1);
 
 header('Content-Type: text/html; charset=utf-8');
 
-// Use the same config as the main application - read config values
-// $envHost = getenv('DB_HOST') ?: '127.0.0.1';
-// $envName = getenv('DB_NAME') ?: 'course_review_hub';
-// $envUser = getenv('DB_USER') ?: 'root';
-// $envPass = getenv('DB_PASS') ?: 'Fine2955'; // Match config.php default
-
 $dbUrl = getenv('JAWSDB_URL') ?: getenv('CLEARDB_DATABASE_URL');
 
 if ($dbUrl) {
