@@ -9,10 +9,20 @@ header('Content-Type: text/html; charset=utf-8');
 
 require_once __DIR__ . '/../includes/auth.php';
 
-$envHost = getenv('DB_HOST') ?: '127.0.0.1';
-$envName = getenv('DB_NAME') ?: 'course_review_hub';
-$envUser = getenv('DB_USER') ?: 'root';
-$envPass = getenv('DB_PASS') ?: 'Fine2955';
+$dbUrl = getenv('JAWSDB_URL') ?: getenv('CLEARDB_DATABASE_URL');
+
+if ($dbUrl) {
+    $url = parse_url($dbUrl);
+    $envHost = $url["host"];
+    $envName = ltrim($url["path"], '/');
+    $envUser = $url["user"];
+    $envPass = $url["pass"];
+} else {
+    $envHost = getenv('DB_HOST') ?: '127.0.0.1';
+    $envName = getenv('DB_NAME') ?: 'course_review_hub';
+    $envUser = getenv('DB_USER') ?: 'root';
+    $envPass = getenv('DB_PASS') ?: 'Fine2955';
+}
 
 $messages = [];
 $error = null;
