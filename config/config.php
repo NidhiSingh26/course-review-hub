@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+// Parse Heroku's database URL (supports both CLEARDB and JAWSDB)
 $dbUrl = getenv('JAWSDB_URL') ?: getenv('CLEARDB_DATABASE_URL');
 
 if ($dbUrl) {
@@ -33,4 +34,3 @@ function get_pdo(): PDO {
     $pdo = new PDO($dsn, $envUser, $envPass, $options);
     return $pdo;
 }
-
