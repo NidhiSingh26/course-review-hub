@@ -2,33 +2,35 @@
 
 declare(strict_types=1);
 
-if (getenv('CLEARDB_DATABASE_URL')) {
-   $url = parse_url(getenv('CLEARDB_DATABASE_URL'));
-   $envHost = $url["host"];
-   $envName = ltrim($url["path"], '/');
-   $envUser = $url["user"];
-   $envPass = $url["pass"];
+$dbUrl = getenv('JAWSDB_URL') ?: getenv('CLEARDB_DATABASE_URL');
+
+if ($dbUrl) {
+    $url = parse_url($dbUrl);
+    $envHost = $url["host"];
+    $envName = ltrim($url["path"], '/');
+    $envUser = $url["user"];
+    $envPass = $url["pass"];
 } else {
-   // Local development settings
-   $envHost = getenv('DB_HOST') ?: '127.0.0.1';
-   $envName = getenv('DB_NAME') ?: 'course_review_hub';
-   $envUser = getenv('DB_USER') ?: 'root';
-   $envPass = getenv('DB_PASS') ?: 'Fine2955';
+    // Local development settings
+    $envHost = getenv('DB_HOST') ?: '127.0.0.1';
+    $envName = getenv('DB_NAME') ?: 'course_review_hub';
+    $envUser = getenv('DB_USER') ?: 'root';
+    $envPass = getenv('DB_PASS') ?: 'Fine2955';
 }
 
 function get_pdo(): PDO {
-   static $pdo = null;
-   if ($pdo instanceof PDO) {
-       return $pdo;
-   }
-   global $envHost, $envName, $envUser, $envPass;
-   $dsn = "mysql:host={$envHost};dbname={$envName};charset=utf8mb4";
-   $options = [
-       PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-       PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-       PDO::ATTR_EMULATE_PREPARES => false,
-   ];
-   $pdo = new PDO($dsn, $envUser, $envPass, $options);
-   return $pdo;
+    static $pdo = null;
+    if ($pdo instanceof PDO) {
+        return $pdo;
+    }
+    global $envHost, $envName, $envUser, $envPass;
+    $dsn = "mysql:host={$envHost};dbname={$envName};charset=utf8mb4";
+    $options = [
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+        PDO::ATTR_EMULATE_PREPARES => false,
+    ];
+    $pdo = new PDO($dsn, $envUser, $envPass, $options);
+    return $pdo;
 }
 
